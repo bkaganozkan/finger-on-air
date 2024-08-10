@@ -2,10 +2,21 @@ import cv2
 import mediapipe as mp
 import serial
 import time
-ser = serial.Serial('COM3', 9600) 
+from serial.tools import list_ports
 
+ports = list_ports.comports()
+available_ports = []
+
+print("Bağlı COM Portları:")
+for i, port in enumerate(ports):
+    print(f"{i}: {port.device} - {port.description}")
+    available_ports.append(port.device)
+
+port_index = int(input("Kullanmak istediğiniz COM portunun numarasını girin: "))
+com_port = available_ports[port_index]
+
+ser = serial.Serial(com_port, 9600)
 time.sleep(2)
-
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands()
 mp_draw = mp.solutions.drawing_utils
@@ -79,3 +90,4 @@ while True:
 ser.close()
 cap.release()
 cv2.destroyAllWindows()
+
